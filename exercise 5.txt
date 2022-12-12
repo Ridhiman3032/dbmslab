@@ -1,0 +1,115 @@
+exercise 5
+
+<book table>
+
+create table books(
+  2  isbn varchar2(10),
+  3  title varchar2(20),
+  4  author char(10),
+  5  publisher varchar2(20),
+  6  primary key(isbn));
+
+Table created.
+
+<students table>
+
+ create table students(
+  2  usn varchar2(10),
+  3  name char(20),
+  4  semester Int,
+  5  department varchar2(10),
+  6  primary key(usn));
+
+Table created.
+
+<borrows table>
+
+ create table borrow(
+  2  usn varchar2(10),
+  3  isbn varchar2(10),
+  4  Dates date,
+  5  foreign key(usn) references students(usn),
+  6  foreign key(isbn) references books(isbn),
+  7  primary key(isbn,usn));
+
+Table created.
+
+insert into books values('&isbn','&title','&author','&publisher');
+Enter value for isbn: I001
+Enter value for title: CSE Book
+Enter value for author: Jeevika
+Enter value for publisher: Cengage
+
+ISBN	   TITLE		AUTHOR	   PUBLISHER
+---------- -------------------- ---------- --------------------
+I001	   CSE Book		Jeevika    Cengage
+I002	   ISE Book		Riddiman   Cengage
+I003	   ECE Book		Owais	   Pearson
+I004	   EEE Book		Prapti	   Sharma
+I005	   Mechanical Book	Prajwal    Hardman
+
+insert into students values('&usn','&name',&semeter,'&department');
+Enter value for usn: IS055
+Enter value for name: Jeevika
+Enter value for semeter: 5
+Enter value for department: ISE
+
+USN	   NAME 		  SEMESTER DEPARTMENT
+---------- -------------------- ---------- ----------
+IS055	   Jeevika			 5 ISE
+IS081	   Owais			 5 CSE
+IS092	   Riddiman			 5 ECE
+IS067	   Maitri			 6 ISE
+IS088	   Prapti			 4 CSE
+
+insert into borrow values('&usn','&isbn','&date');
+Enter value for usn: IS055
+Enter value for isbn: I00300S
+Enter value for date: 01-mar-2022
+
+USN	   ISBN       DATES
+---------- ---------- ---------
+IS055	   I003       01-MAR-22
+IS067	   I001       03-JUN-22
+IS092	   I004       21-AUG-22
+IS088	   I002       23-SEP-22
+IS081	   I005       19-OCT-22
+
+select name from students where usn in(select usn from borrow where isbn='I002' or isbn='I003'); 
+
+NAME
+--------------------
+Jeevika
+Owais
+Prapti
+
+select name from students where gender='f' and usn in( select usn from borrow where isbn in(select isbn from books where title='ECE Book'));
+
+NAME
+--------------------
+Jeevika
+
+
+select s.name, count(*)
+  2  from students s join borrow b
+  3  on(s.usn = b.usn)
+  4  group by s.name;
+
+NAME		       COUNT(*)
+-------------------- ----------
+Owais			      2
+Jeevika 		      1
+Maitri			      1
+Riddiman		      1
+Prapti			      1
+
+
+
+ select * from books where title like 'DA%' and isbn not in(select isbn from borrow);
+
+ISBN	   TITLE		AUTHOR	   PUBLISHER
+---------- -------------------- ---------- --------------------
+I006	   DATABASE		Prajwal    Maitri
+
+
+
